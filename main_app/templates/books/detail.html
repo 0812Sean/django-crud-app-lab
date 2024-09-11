@@ -8,4 +8,20 @@
 
 <a href="{% url 'book-update' book.id %}">Edit</a> |
 <a href="{% url 'book-delete' book.id %}">Delete</a>
+
+<h2>Reviews:</h2>
+{% if book.reviews.exists %}
+    <ul>
+        {% for review in book.reviews.all %}
+            <li>
+                <strong>{{ review.reviewer_name }}</strong>: {{ review.review_text }} 
+                <span>Rating: {{ review.rating }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No reviews yet</p>
+{% endif %}
+
+<a href="{% url 'review-create' book.id %}">Add a Review</a>
 {% endblock %}

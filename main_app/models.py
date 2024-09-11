@@ -16,3 +16,16 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse('book-detail', kwargs={'book_id': self.id})
+
+class Review(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
+    reviewer_name = models.CharField(max_length=100)
+    review_text = models.TextField(max_length=1000)
+    rating = models.IntegerField(default=0)
+
+
+    def __str__(self):
+        return f"Review by {self.reviewer_name} for {self.book.title}"
+
+    def get_absolute_url(self):
+        return reverse('review-detail', kwargs={'pk': self.id})

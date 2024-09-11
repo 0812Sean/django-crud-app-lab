@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
-from .models import Book
+
+from .models import Book, Review
 
 class Home(LoginView):
     template_name = 'home.html'
@@ -22,6 +24,7 @@ def book_index(request):
 @login_required
 def book_detail(request, book_id):
     book = Book.objects.get(id=book_id)
+    reviews = book.reviews.all()
     return render(request, 'books/detail.html', {'book': book})
 
 def signup(request):
@@ -55,4 +58,33 @@ class BookDelete(LoginRequiredMixin, DeleteView):
     model = Book
     success_url = '/books/'
 
+class BookDetail(DetailView):
+    model = Book
+    template_name = 'books/detail.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reviews'] = self.object.reviews.all()
+        return context
 
+
+class ReviewCreate(CreateView):
+    model = Review
+    fields = ['reviewer_name', 'review_text', 'rating']
+
+    def form_valid(self, form):
+        form.instance.book_id = self.kwargs['book_id']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('book-detail', kwargs={'book_id': self.kwargs['book_id']})
+
+class ReviewUpdate(UpdateView):
+    model = Review
+    fields = ['reviewer_name', 'review_text', 'rating']
+
+class ReviewDelete(DeleteView):
+    model = Review
+
+    def get_success_url(self):
+        return reverse('book-detail', kwargs={'book_id': self.object.book.id})
