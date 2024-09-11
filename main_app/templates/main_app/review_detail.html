@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Review for {{ review.book.title }}</h1>
+  <p>{{ review.content }}</p>
+  <p><strong>Rating:</strong> {{ review.rating }}/5</p>
+  <p><em>By {{ review.user }}</em></p>
+  <a href="{% url 'book-detail' review.book.id %}">Back to Book</a>
+{% endblock %}

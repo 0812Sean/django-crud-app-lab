@@ -17,6 +17,8 @@
                 <strong>{{ review.reviewer_name }}</strong>: {{ review.review_text }} 
                 <span>Rating: {{ review.rating }}</span>
             </li>
+            <a href="{% url 'review-update' review.id %}">Edit Review</a>
+            <a href="{% url 'review-delete' review.id %}">Delete Review</a>
         {% endfor %}
     </ul>
 {% else %}

@@ -61,7 +61,7 @@ class BookDelete(LoginRequiredMixin, DeleteView):
 class BookDetail(DetailView):
     model = Book
     template_name = 'books/detail.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reviews'] = self.object.reviews.all()
@@ -88,3 +88,12 @@ class ReviewDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('book-detail', kwargs={'book_id': self.object.book.id})
+
+class ReviewDetail(DetailView):
+    model = Review
+    template_name = 'main_app/review_detail.html'
+
+class ReviewDelete(DeleteView):
+    model = Review
+    template_name = 'main_app/review_confirm_delete.html'
+    success_url = '/books/'
